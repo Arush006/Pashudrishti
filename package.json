@@ -1,0 +1,12 @@
+{
+  "name": "pashudrishti",
+  "version": "1.0.0",
+  "description": "AI-Powered Animal Disease Detection Platform",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/pashudrishti.git"
+  },
+  "keywords": ["veterinary", "animal-disease", "ai", "detection", "agriculture"],
+  "author": "PashuDrishti Team",
+  "license": "MIT"
+}
