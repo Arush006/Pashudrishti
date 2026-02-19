@@ -1,72 +1,84 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Topbar from '../Shared/Topbar';
-import { FileText, Search, Filter } from 'lucide-react';
+import { FileText, Clock, CheckCircle, AlertCircle, Search } from 'lucide-react';
 
 const MyCases = () => {
   const [cases] = useState([
     {
       id: 1,
       caseId: 'CASE-001',
-      pet: { name: 'Bessie', breed: 'Holstein Cow' },
-      doctor: 'Dr. Rajesh Kumar',
+      patient: 'Farmer Singh',
+      animal: 'Cow',
       disease: 'Foot and Mouth Disease',
-      status: 'active',
-      lastUpdate: '2024-02-18',
-      createdDate: '2024-01-15',
+      status: 'in-progress',
+      date: '2024-01-15',
+      severity: 'high',
     },
     {
       id: 2,
       caseId: 'CASE-002',
-      pet: { name: 'Mohan', breed: 'Buffalo' },
-      doctor: 'Dr. Priya Singh',
+      patient: 'Rajesh Patel',
+      animal: 'Buffalo',
       disease: 'Mastitis',
       status: 'pending',
-      lastUpdate: '2024-02-15',
-      createdDate: '2024-02-15',
+      date: '2024-01-18',
+      severity: 'medium',
     },
     {
       id: 3,
       caseId: 'CASE-003',
-      pet: { name: 'Shaun', breed: 'Goat' },
-      doctor: 'Dr. Rajesh Kumar',
+      patient: 'Priya Sharma',
+      animal: 'Goat',
       disease: 'Pneumonia',
       status: 'resolved',
-      lastUpdate: '2024-02-10',
-      createdDate: '2024-01-10',
+      date: '2024-01-10',
+      severity: 'high',
     },
     {
       id: 4,
       caseId: 'CASE-004',
-      pet: { name: 'Chickens', breed: 'Broilers' },
-      doctor: 'Dr. Amit Patel',
+      patient: 'Amit Kumar',
+      animal: 'Chicken',
       disease: 'Coccidiosis',
-      status: 'active',
-      lastUpdate: '2024-02-16',
-      createdDate: '2024-02-01',
+      status: 'in-progress',
+      date: '2024-01-16',
+      severity: 'low',
     },
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
 
   const getStatusBadge = (status) => {
     const badges = {
-      active: 'bg-green-100 text-green-800',
-      pending: 'bg-yellow-100 text-yellow-800',
-      resolved: 'bg-gray-100 text-gray-800',
+      'pending': { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: Clock },
+      'in-progress': { bg: 'bg-blue-100', text: 'text-blue-800', icon: AlertCircle },
+      'resolved': { bg: 'bg-green-100', text: 'text-green-800', icon: CheckCircle },
     };
-    return badges[status];
+    const badge = badges[status];
+    const Icon = badge.icon;
+    return (
+      <span className={`${badge.bg} ${badge.text} px-3 py-1 rounded-full text-sm font-semibold flex items-center space-x-1 w-fit`}>
+        <Icon size={16} />
+        <span className="capitalize">{status.replace('-', ' ')}</span>
+      </span>
+    );
   };
 
-  const filteredCases = cases.filter((c) => {
-    const matchesSearch =
-      c.pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.caseId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.disease.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || c.status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
+  const getSeverityColor = (severity) => {
+    const colors = {
+      'low': 'text-green-600',
+      'medium': 'text-yellow-600',
+      'high': 'text-red-600',
+    };
+    return colors[severity];
+  };
+
+  const filteredCases = cases.filter(
+    (c) =>
+      c.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.caseId.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
@@ -78,40 +90,26 @@ const MyCases = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">My Cases</h1>
-          <p className="text-gray-600">Track all your animal health cases and treatments</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Your Cases</h1>
+          <p className="text-gray-600">Manage and track all your assigned cases</p>
         </motion.div>
 
-        {/* Search and Filter */}
+        {/* Search Bar */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
+          className="mb-8"
         >
           <div className="relative">
             <Search className="absolute left-4 top-3.5 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Search by pet name, case ID, or disease..."
+              placeholder="Search by patient name or case ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
             />
-          </div>
-
-          <div className="relative">
-            <Filter className="absolute left-4 top-3.5 text-gray-400" size={20} />
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-gray-900"
-            >
-              <option value="all">All cases</option>
-              <option value="active">Active cases</option>
-              <option value="pending">Pending cases</option>
-              <option value="resolved">Resolved cases</option>
-            </select>
           </div>
         </motion.div>
 
@@ -127,12 +125,12 @@ const MyCases = () => {
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Case ID</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Pet</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Patient</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Animal</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Disease</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Doctor</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Created</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Last Update</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Severity</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Date</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Action</th>
                 </tr>
               </thead>
@@ -146,19 +144,16 @@ const MyCases = () => {
                     className="border-b border-gray-200 hover:bg-gray-50 transition"
                   >
                     <td className="px-6 py-4 text-sm font-semibold text-blue-600">{caseItem.caseId}</td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-semibold text-gray-900">{caseItem.pet.name}</div>
-                      <div className="text-xs text-gray-600">{caseItem.pet.breed}</div>
-                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{caseItem.patient}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{caseItem.animal}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">{caseItem.disease}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{caseItem.doctor}</td>
+                    <td className="px-6 py-4">{getStatusBadge(caseItem.status)}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusBadge(caseItem.status)}`}>
-                        {caseItem.status}
+                      <span className={`text-sm font-semibold capitalize ${getSeverityColor(caseItem.severity)}`}>
+                        {caseItem.severity}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{caseItem.createdDate}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{caseItem.lastUpdate}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{caseItem.date}</td>
                     <td className="px-6 py-4">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -177,7 +172,7 @@ const MyCases = () => {
           {filteredCases.length === 0 && (
             <div className="p-8 text-center">
               <FileText size={48} className="mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-600">No cases found matching your filters</p>
+              <p className="text-gray-600">No cases found matching your search.</p>
             </div>
           )}
         </motion.div>
@@ -193,24 +188,45 @@ const MyCases = () => {
             whileHover={{ scale: 1.05 }}
             className="bg-white rounded-xl p-6 shadow-md"
           >
-            <p className="text-gray-600 text-sm mb-2">Total Cases</p>
-            <p className="text-3xl font-bold text-gray-900">{cases.length}</p>
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <FileText className="text-blue-600" size={28} />
+              </div>
+              <div>
+                <p className="text-gray-600 text-sm">Total Cases</p>
+                <p className="text-2xl font-bold text-gray-900">{cases.length}</p>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="bg-white rounded-xl p-6 shadow-md"
           >
-            <p className="text-gray-600 text-sm mb-2">Active Cases</p>
-            <p className="text-3xl font-bold text-green-600">{cases.filter(c => c.status === 'active').length}</p>
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-yellow-100 rounded-lg">
+                <Clock className="text-yellow-600" size={28} />
+              </div>
+              <div>
+                <p className="text-gray-600 text-sm">In Progress</p>
+                <p className="text-2xl font-bold text-gray-900">{cases.filter(c => c.status === 'in-progress').length}</p>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="bg-white rounded-xl p-6 shadow-md"
           >
-            <p className="text-gray-600 text-sm mb-2">Resolved Cases</p>
-            <p className="text-3xl font-bold text-blue-600">{cases.filter(c => c.status === 'resolved').length}</p>
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-green-100 rounded-lg">
+                <CheckCircle className="text-green-600" size={28} />
+              </div>
+              <div>
+                <p className="text-gray-600 text-sm">Resolved</p>
+                <p className="text-2xl font-bold text-gray-900">{cases.filter(c => c.status === 'resolved').length}</p>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       </div>

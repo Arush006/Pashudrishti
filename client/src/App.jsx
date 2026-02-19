@@ -18,6 +18,9 @@ import Notifications from './components/Admin/Notifications';
 
 // Doctor
 import DoctorDashboard from './components/Doctor/DoctorDashboard';
+import DoctorMyCases from './components/Doctor/MyCases';
+import DoctorAppointments from './components/Doctor/Appointments';
+import DoctorProfile from './components/Doctor/Profile';
 import CaseRequests from './components/Doctor/CaseRequests';
 import CaseHistory from './components/Doctor/CaseHistory';
 
@@ -43,8 +46,9 @@ const App = () => {
 
   const doctorMenuItems = [
     { label: 'Dashboard', path: '/doctor/dashboard', icon: <LayoutDashboard size={20} /> },
-    { label: 'Case Requests', path: '/doctor/cases', icon: <Calendar size={20} /> },
-    { label: 'Case History', path: '/doctor/history', icon: <FileText size={20} /> },
+    { label: 'My Cases', path: '/doctor/mycases', icon: <FileText size={20} /> },
+    { label: 'Appointments', path: '/doctor/appointments', icon: <Calendar size={20} /> },
+    { label: 'Profile', path: '/doctor/profile', icon: <User size={20} /> },
   ];
 
   const userMenuItems = [
@@ -123,6 +127,30 @@ const App = () => {
           element={
             <ProtectedRoute requiredRole="doctor">
               <DoctorDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/doctor/mycases" 
+          element={
+            <ProtectedRoute requiredRole="doctor">
+              <DoctorMyCases />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/doctor/appointments" 
+          element={
+            <ProtectedRoute requiredRole="doctor">
+              <DoctorAppointments />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/doctor/profile" 
+          element={
+            <ProtectedRoute requiredRole="doctor">
+              <DoctorProfile />
             </ProtectedRoute>
           } 
         />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { adminService } from '../../services/authService';
 import toast from 'react-hot-toast';
-import { Trash2, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);

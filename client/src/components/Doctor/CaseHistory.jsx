@@ -10,19 +10,19 @@ const CaseHistory = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    const fetchCaseHistory = async () => {
+      try {
+        const response = await doctorService.getCaseHistory(searchTerm);
+        setCases(response.data);
+      } catch (error) {
+        toast.error('Failed to fetch case history');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchCaseHistory();
   }, [searchTerm]);
-
-  const fetchCaseHistory = async () => {
-    try {
-      const response = await doctorService.getCaseHistory(searchTerm);
-      setCases(response.data);
-    } catch (error) {
-      toast.error('Failed to fetch case history');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin h-12 w-12 border-b-2 border-primary"></div></div>;
 
