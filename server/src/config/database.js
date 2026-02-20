@@ -3,25 +3,53 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Create Connection Pool
+// const pool = mysql.createPool({
+//   host: process.env.DB_HOST || 'localhost',
+//   user: process.env.DB_USER || 'root',
+//   password: process.env.DB_PASSWORD || '',
+//   database: process.env.DB_NAME || 'pashudrishti',
+//   port: process.env.DB_PORT || 3306,
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
+
 const pool = mysql.createPool({
-  host: 'localhost',
+  host: '127.0.0.1',
   user: 'root',
-  password: 'password',
+  password: '',
   database: 'pashudrishti',
+  port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
 });
 
-export const getConnection = () => {
-  return pool.getConnection();
+// Test Database Connection
+(async () => {
+  try {
+    const connection = await pool.getConnection();
+    console.log("✅ MySQL Connected Successfully");
+    connection.release();
+  } catch (error) {
+    console.error("❌ Database Connection Failed:", error.message);
+  }
+})();
+
+// Get Manual Connection (for transactions if needed)
+export const getConnection = async () => {
+  return await pool.getConnection();
 };
 
-export const executeQuery = async (query, values = []) => {
-  const connection = await getConnection();
+// Simple Query Executor
+export const executeQuery = async (query, params = []) => {
+  const connection = await pool.getConnection();
   try {
-    const [results] = await connection.execute(query, values);
-    return results;
+    const [rows] = await connection.execute(query, params);
+    return rows;
+  } catch (error) {
+    console.error("Query Error:", error.message);
+    throw error;
   } finally {
     connection.release();
   }
